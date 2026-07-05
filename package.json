@@ -1,9 +1,28 @@
 {
   "name": "meme-generator",
-  "description": "Experiment for Dependency-Driven Programming",
+  "version": "0.1.0",
+  "description": "A simple web-based meme generator built as the first experimental application of Dependency-Driven Programming (DDP).",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "license": "MIT",
+  "author": "Naoki Takamatsu",
+  "homepage": "https://meme-generator.takamatsu0331.workers.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naoki-takamatsu/meme-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/naoki-takamatsu/meme-generator/issues"
+  },
+  "keywords": [
+    "meme",
+    "image-editor",
+    "typescript",
+    "vite",
+    "dependency-driven-programming",
+    "ddp",
+    "experimental"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
