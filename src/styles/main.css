@@ -53,6 +53,13 @@ button {
   flex: 1;
 }
 
+/* Title of the app. */
+#app-title {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 /* Every row in the "main-container". */
 .row {
   display: flex;
