@@ -19,7 +19,7 @@ The goal is to keep applications understandable as they grow in complexity.
 https://meme-generator.takamatsu0331.workers.dev/
 
 <p align="center">
-  <img width="800" alt="image" src="https://github.com/user-attachments/assets/96f7c4a4-b80d-40ce-a40f-e588dde128dd" />
+  <img width="800" alt="image" src="https://github.com/user-attachments/assets/70b409d1-43de-4f1e-a48d-77a2823c27a3" />
 </p>
 
 ### Example Output
