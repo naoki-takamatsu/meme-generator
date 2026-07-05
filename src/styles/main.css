@@ -1,64 +1,96 @@
+/* Body. */
 body {
   opacity: 0;
   display: flex;
   justify-content: center;
   text-align: center;
   text-transform: uppercase;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
+/* When the "body" is ready. */
 body.ready {
   opacity: 1;
   transition: opacity 0.2s ease;
 }
 
-#main-container {
-  width: min(90vw, 580px);
-  display: flex;
-  flex-direction: column;
-}
-
-#main-container *{
-  margin-right: 0;
-  flex: 1;
-}
-
-.row-container {
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-}
-
+/* Every button. */
 button {
   text-transform: uppercase;
 }
 
-#enter-caption {
-  font-size: 19px;
-  resize: none;
-  text-transform: none;
-}
-
-.icon-button {
+/* Every button that has an icon. */
+.button-with-icon {
   display: flex;
   text-align: center;
   justify-content: center;
   max-width: 60px;
 }
 
-.icon-button.active {
-  background-color: #526980;
+/* Buttons with an icon when viewd on small screens. */
+@media (max-width: 768px) {
+  .button-with-icon {
+    max-width: none;
+  }
 }
 
-.icon-align{
+/* Every icon in buttons */
+.icon-in-button {
   min-width: 22px;
   min-height: 22px;
 }
 
+/* Container of everything. */
+#main-container {
+  width: min(90vw, 580px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Everything in the "main-container". */
+#main-container * {
+  margin-right: 0;
+  flex: 1;
+}
+
+/* Every row in the "main-container". */
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+/* Textarea for the caption entering. */
+#enter-caption {
+  font-size: 19px;
+  resize: none;
+  text-transform: none;
+}
+
+/* Container of every configs. */
+#config-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+/* Config container when viewed on small screens. */
+@media (max-width: 768px) {
+  #config-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* When the "align-button" is active. */
+.align-button.active {
+  background-color: #526980;
+}
+
+/* Slider for the font size input. */
 #font-size-input {
   margin-top: 0;
 }
 
+/* Canvas for image rendering. */
 #canvas {
   width: 100%;
 }
