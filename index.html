@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+  <link rel="stylesheet" href="./src/styles/main.css" />
+  <script type="module" src="/src/main.ts" defer></script>
+  <title>Meme Generator</title>
+</head>
+
+<body>
+  <main id="main-container">
+    <h1>Meme generator</h1>
+    <input id="hidden-input" type="file" accept="image/*" style="display: none" />
+    <div id="button-container">
+      <button id="upload-image">Upload Image</button>
+      <button id="paste-image">Paste Image</button>
+    </div>
+    <textarea id="enter-caption" placeholder="Write a caption for this image..." type="textarea" rows="2"></textarea>
+    <input type="range" id="font-size-input" min="34" value="44" max="54" />
+    <p id="drag-and-drop-guide">...Drag and drop available...</p>
+    <canvas id="canvas" />
+  </main>
+</body>
+
+</html>

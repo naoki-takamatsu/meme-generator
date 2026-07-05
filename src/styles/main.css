@@ -1,0 +1,44 @@
+body {
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+}
+
+body.ready {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+#main-container {
+  width: min(90vw, 600px);
+  display: flex;
+  flex-direction: column;
+}
+
+#button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+#button-container button {
+  flex: 1;
+  margin-right: 0;
+  text-transform: uppercase;
+}
+
+#enter-caption {
+  resize: none;
+  text-transform: none;
+}
+
+#font-size-input {
+  margin: 0;
+}
+
+#canvas {
+  width: 100%;
+}
