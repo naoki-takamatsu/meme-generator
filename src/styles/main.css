@@ -13,7 +13,7 @@ body.ready {
 }
 
 #main-container {
-  width: min(90vw, 600px);
+  width: min(90vw, 580px);
   display: flex;
   flex-direction: column;
 }
@@ -34,6 +34,7 @@ button {
 }
 
 #enter-caption {
+  font-size: 19px;
   resize: none;
   text-transform: none;
 }
