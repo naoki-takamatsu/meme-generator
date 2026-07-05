@@ -18,21 +18,40 @@ body.ready {
   flex-direction: column;
 }
 
-#button-container {
+#main-container *{
+  margin-right: 0;
+  flex: 1;
+}
+
+.row-container {
   display: flex;
   flex-direction: row;
   gap: 6px;
 }
 
-#button-container button {
-  flex: 1;
-  margin-right: 0;
+button {
   text-transform: uppercase;
 }
 
 #enter-caption {
   resize: none;
   text-transform: none;
+}
+
+.icon-button {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  max-width: 60px;
+}
+
+.icon-button.active {
+  background-color: #526980;
+}
+
+.icon-align{
+  min-width: 22px;
+  min-height: 22px;
 }
 
 #font-size-input {

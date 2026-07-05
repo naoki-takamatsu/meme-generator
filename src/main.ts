@@ -20,6 +20,17 @@ let image: ImageBitmap | undefined;
 // Caption entered by the user.
 let caption: string;
 
+// Alignment of Caption.
+let captionAlign: string;
+
+// Buttons for caption alignment.
+const alignLeft = document.getElementById("align-left") as HTMLButtonElement;
+const alignCenter = document.getElementById(
+  "align-center",
+) as HTMLButtonElement;
+const alignRight = document.getElementById("align-right") as HTMLButtonElement;
+const alignButtons = [alignLeft, alignCenter, alignRight];
+
 // Canvas and rendering context for the image.
 const imageCanvas = new OffscreenCanvas(0, 0);
 const imageCtx = imageCanvas.getContext("2d")!;
@@ -99,6 +110,24 @@ enterCaption.addEventListener("input", (e) => {
   syncCaption(element.value);
 });
 
+// When the user chooses left alignment.
+alignLeft.addEventListener("click", () => {
+  syncCaptionAlign("left");
+  syncAlignButtons("left");
+});
+
+// When the user chooses center alignment.
+alignCenter.addEventListener("click", () => {
+  syncCaptionAlign("center");
+  syncAlignButtons("center");
+});
+
+// When the user chooses right alignment.
+alignRight.addEventListener("click", () => {
+  syncCaptionAlign("right");
+  syncAlignButtons("right");
+});
+
 ////////////////////////////////////////////////////////////
 // SYNCS
 ////////////////////////////////////////////////////////////
@@ -117,7 +146,7 @@ const syncCaption = (input: string) => {
 };
 
 const syncDragAndDropGuide = () => {
-  dragAndDropGuide.style.display = "none";
+  C.hideHtmlElement(dragAndDropGuide);
 };
 
 const syncImageCanvas = async () => {
@@ -132,8 +161,24 @@ const syncFontSize = (input: number) => {
   syncCaptionCanvas();
 };
 
+const syncCaptionAlign = (input: string) => {
+  captionAlign = input;
+
+  syncCaptionCanvas();
+};
+
+const syncAlignButtons = (input: string) => {
+  C.activateAlignButton(alignButtons)(input);
+};
+
 const syncCaptionCanvas = () => {
-  C.composeCaption(captionCanvas)(captionCtx)(caption)(fontSize);
+  const captionOptions = {
+    caption,
+    fontSize,
+    captionAlign,
+  };
+
+  C.composeCaption(captionCanvas)(captionCtx)(captionOptions);
 
   syncBackgroundCanvas();
 };

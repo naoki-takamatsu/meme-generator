@@ -14,12 +14,38 @@
   <main id="main-container">
     <h1>Meme generator</h1>
     <input id="hidden-input" type="file" accept="image/*" style="display: none" />
-    <div id="button-container">
+    <div id="button-container" class="row-container">
       <button id="upload-image">Upload Image</button>
       <button id="paste-image">Paste Image</button>
     </div>
     <textarea id="enter-caption" placeholder="Write a caption for this image..." type="textarea" rows="2"></textarea>
-    <input type="range" id="font-size-input" min="34" value="44" max="54" />
+    <div id="config-container" class="row-container">
+      <button id="align-left" class="icon-button">
+        <svg class="icon-align" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 5H3" />
+          <path d="M15 12H3" />
+          <path d="M17 19H3" />
+        </svg>
+      </button>
+      <button id="align-center" class="icon-button">
+        <svg class="icon-align" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 5H3" />
+          <path d="M17 12H7" />
+          <path d="M19 19H5" />
+        </svg>
+      </button>
+      <button id="align-right" class="icon-button">
+        <svg class="icon-align" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 5H3" />
+          <path d="M21 12H9" />
+          <path d="M21 19H7" />
+        </svg>
+      </button>
+      <input type="range" title="FONT SIZE" id="font-size-input" min="34" value="44" max="54" />
+    </div>
     <p id="drag-and-drop-guide">...Drag and drop available...</p>
     <canvas id="canvas" />
   </main>

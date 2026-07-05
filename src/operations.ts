@@ -2,19 +2,19 @@
 // CONSTANTS
 ////////////////////////////////////////////////////////////
 
-// The width and height of the "imageCanvas".
+// Width and height of the "imageCanvas".
 const imageSize = 1024;
 
-// The width of the border around the image.
+// Width of the border around the image.
 const imageBorderWidth = 18;
 
-// The strength of blur that is applied to fill the gap in the "imageCanvas".
+// Strength of blur that is applied to fill the gap in the "imageCanvas".
 const blurStrength = 25;
 
-// The font width that is used for the "captionCanvas".
+// Font width that is used for the "captionCanvas".
 const fontWidth = "700";
 
-// The font family that is used for the "captionCanvas".
+// Font family that is used for the "captionCanvas".
 const fontFamily = "Noto Serif JP";
 
 ////////////////////////////////////////////////////////////
@@ -53,6 +53,23 @@ export const loadClipboardImage = async () => {
 
   return undefined;
 };
+
+// Make a HTML element invisible.
+export const hideHtmlElement = (element: HTMLElement) => {
+  element.style.display = "none";
+};
+
+// Activate one of the align buttons.
+export const activateAlignButton =
+  (buttons: Array<HTMLButtonElement>) => (direction: string) => {
+    for (const button of buttons) {
+      if (button.id === `align-${direction}`) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
+    }
+  };
 
 // Compose the imageCanvas.
 export const composeImage =
@@ -105,32 +122,47 @@ export const composeImage =
         );
       };
 
+type CaptionOptions = {
+  caption: string;
+  fontSize: number;
+  captionAlign: string;
+};
+
 // Compose the captionCanvas
 export const composeCaption =
   (canvas: OffscreenCanvas) =>
     (ctx: OffscreenCanvasRenderingContext2D) =>
-      (caption: string) =>
-        (fontSize: number) => {
-          // Measure the metrics of the font.
-          const metrics = ctx.measureText("");
+      (options: CaptionOptions) => {
+        // Measure the metrics of the font.
+        const metrics = ctx.measureText("");
 
-          const ascent = metrics.fontBoundingBoxAscent;
-          const descent = metrics.fontBoundingBoxDescent;
+        const ascent = metrics.fontBoundingBoxAscent;
+        const descent = metrics.fontBoundingBoxDescent;
 
-          // Define the canvas size.
-          const lines = caption.split("\n");
+        // Define the canvas size.
+        const lines = options.caption.split("\n");
 
-          canvas.width = imageSize;
-          canvas.height = lines.length * (ascent + descent) + descent;
+        canvas.width = imageSize;
+        canvas.height = lines.length * (ascent + descent) + descent;
 
-          // Render the caption.
-          ctx.font = `${fontWidth} ${fontSize}px '${fontFamily}'`;
-          ctx.fillStyle = "white";
+        // Render the caption.
+        ctx.font = `${fontWidth} ${options.fontSize}px '${fontFamily}'`;
+        ctx.fillStyle = "white";
+        ctx.textAlign = options.captionAlign as CanvasTextAlign;
 
-          lines.forEach((line, i) => {
-            ctx.fillText(line, 0, (ascent + descent) * (i + 1));
-          });
-        };
+        const x =
+          options.captionAlign === "left"
+            ? 0
+            : options.captionAlign === "center"
+              ? imageSize / 2
+              : options.captionAlign === "right"
+                ? imageSize
+                : 0;
+
+        lines.forEach((line, i) => {
+          ctx.fillText(line, x, (ascent + descent) * (i + 1));
+        });
+      };
 
 // Compose the backgroundCanvas.
 export const composeBackground =
@@ -146,7 +178,7 @@ export const composeBackground =
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       };
 
-// The type that is used for the argument of the "renderCanvas".
+// Type that is used for the argument of the "renderCanvas".
 type Layers = {
   image: OffscreenCanvas;
   caption: OffscreenCanvas;
