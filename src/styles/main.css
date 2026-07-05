@@ -42,7 +42,7 @@ button {
 
 /* Container of everything. */
 #main-container {
-  width: min(90vw, 580px);
+  width: min(90vw, 530px);
   display: flex;
   flex-direction: column;
 }
@@ -70,6 +70,7 @@ button {
 /* Textarea for the caption entering. */
 #enter-caption {
   font-size: 19px;
+  min-height: 5rem;
   resize: none;
   text-transform: none;
 }
