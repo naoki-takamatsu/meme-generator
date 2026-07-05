@@ -113,19 +113,16 @@ enterCaption.addEventListener("input", (e) => {
 // When the user chooses left alignment.
 alignLeft.addEventListener("click", () => {
   syncCaptionAlign("left");
-  syncAlignButtons("left");
 });
 
 // When the user chooses center alignment.
 alignCenter.addEventListener("click", () => {
   syncCaptionAlign("center");
-  syncAlignButtons("center");
 });
 
 // When the user chooses right alignment.
 alignRight.addEventListener("click", () => {
   syncCaptionAlign("right");
-  syncAlignButtons("right");
 });
 
 ////////////////////////////////////////////////////////////
@@ -164,6 +161,7 @@ const syncFontSize = (input: number) => {
 const syncCaptionAlign = (input: string) => {
   captionAlign = input;
 
+  syncAlignButtons(input);
   syncCaptionCanvas();
 };
 
