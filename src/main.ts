@@ -18,10 +18,10 @@ const dragAndDropGuide = document.getElementById(
 let image: ImageBitmap | undefined;
 
 // Caption entered by the user.
-let caption: string;
+let caption = "";
 
 // Alignment of Caption.
-let captionAlign: string;
+let captionAlignment = "left";
 
 // Buttons for caption alignment.
 const alignLeft = document.getElementById("align-left") as HTMLButtonElement;
@@ -159,7 +159,7 @@ const syncFontSize = (input: number) => {
 };
 
 const syncCaptionAlign = (input: string) => {
-  captionAlign = input;
+  captionAlignment = input;
 
   syncAlignButtons(input);
   syncCaptionCanvas();
@@ -173,7 +173,7 @@ const syncCaptionCanvas = () => {
   const captionOptions = {
     caption,
     fontSize,
-    captionAlign,
+    captionAlign: captionAlignment,
   };
 
   C.composeCaption(captionCanvas)(captionCtx)(captionOptions);
@@ -215,6 +215,9 @@ const initialize = () => {
 
   // Set up the "fontSize".
   fontSizeInput.dispatchEvent(new Event("input"));
+
+  // Set up the "captionAlignment".
+  alignLeft.dispatchEvent(new Event("click"));
 };
 
 initialize();
