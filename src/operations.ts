@@ -1,10 +1,28 @@
+////////////////////////////////////////////////////////////
+// CONSTANTS
+////////////////////////////////////////////////////////////
+
+// The width and height of the "imageCanvas".
 const imageSize = 1024;
-const frameSize = 18;
+
+// The width of the border around the image.
+const imageBorderWidth = 18;
+
+// The strength of blur that is applied to fill the gap in the "imageCanvas".
 const blurStrength = 25;
+
+// The font width that is used for the "captionCanvas".
 const fontWidth = "700";
+
+// The font family that is used for the "captionCanvas".
 const fontFamily = "Noto Serif JP";
 
-export const droppedFileToImage = async (e: DragEvent) => {
+////////////////////////////////////////////////////////////
+// OPERATIONS
+////////////////////////////////////////////////////////////
+
+// Load a image from a dragged and dropped file.
+export const loadDroppedImage = async (e: DragEvent) => {
   const file = e.dataTransfer?.files[0];
 
   return file?.type.startsWith("image/")
@@ -12,41 +30,36 @@ export const droppedFileToImage = async (e: DragEvent) => {
     : undefined;
 };
 
-export const fetchUploadedImage = async (input: HTMLInputElement) => {
+// Load a image from an uploaded file.
+export const loadUploadedImage = async (input: HTMLInputElement) => {
   const file = input?.files?.[0];
 
   return file ? await createImageBitmap(file) : undefined;
 };
 
-export const clipboardToImage = async () => {
+// Load a image from the clipboard.
+export const loadClipboardImage = async () => {
   const items = await navigator.clipboard.read();
-  const itemAndTypes = items.map((item) => ({ item: item, types: item.types }));
 
-  const imageItemAndType = itemAndTypes
-    .filter((table) => table.types.some((type) => type.startsWith("image/")))
-    .map((table) => ({
-      item: table.item,
-      types: table.types.find((type) => type.startsWith("image/")),
-    }))[0];
+  for (const item of items) {
+    const type = item.types.find((type) => type.startsWith("image/"));
 
-  const imageItem = imageItemAndType.item;
-  const type = imageItemAndType.types;
-  const blob = type ? await imageItem.getType(type) : undefined;
+    if (!type) continue;
 
-  return blob ? createImageBitmap(blob) : undefined;
+    const blob = await item.getType(type);
+
+    return createImageBitmap(blob);
+  }
+
+  return undefined;
 };
 
-export const calculateTextFieldHeight = (textField: HTMLTextAreaElement) => {
-  const innerTextArea = textField?.shadowRoot?.querySelector('textarea');
-  console.log(innerTextArea?.scrollHeight)
-
-  return (innerTextArea?.scrollHeight ?? 0) + "px";
-};
-
-export const editImage =
+// Compose the imageCanvas.
+export const composeImage =
   (canvas: OffscreenCanvas) =>
     (ctx: OffscreenCanvasRenderingContext2D) =>
       async (image: ImageBitmap) => {
+        // Resize the original image to fit in the square. The result image must be a square due to an aesthetic reason.
         const scale = imageSize / Math.max(image.width, image.height);
 
         const resizedImage = await createImageBitmap(image, {
@@ -55,6 +68,7 @@ export const editImage =
           resizeQuality: "high",
         });
 
+        // Resize the original image to fill the gap in the square. This resized image works as a blurred background.
         const backgroundScale = imageSize / Math.min(image.width, image.height);
 
         const backgroundImage = await createImageBitmap(image, {
@@ -63,6 +77,7 @@ export const editImage =
           resizeQuality: "high",
         });
 
+        // Render the blurred background.
         canvas.width = imageSize;
         canvas.height = imageSize;
 
@@ -78,6 +93,7 @@ export const editImage =
             : 0,
         );
 
+        // Render the resized image on the blurred background.
         ctx.filter = "none";
 
         ctx.drawImage(
@@ -87,27 +103,27 @@ export const editImage =
             ? (imageSize - resizedImage.height) / 2
             : 0,
         );
-
-        const finalImage = await createImageBitmap(canvas);
-
-        ctx.drawImage(finalImage, 0, 0);
       };
 
-export const editCaption =
+// Compose the captionCanvas
+export const composeCaption =
   (canvas: OffscreenCanvas) =>
     (ctx: OffscreenCanvasRenderingContext2D) =>
       (caption: string) =>
         (fontSize: number) => {
+          // Measure the metrics of the font.
           const metrics = ctx.measureText("");
 
           const ascent = metrics.fontBoundingBoxAscent;
           const descent = metrics.fontBoundingBoxDescent;
 
+          // Define the canvas size.
           const lines = caption.split("\n");
 
           canvas.width = imageSize;
           canvas.height = lines.length * (ascent + descent) + descent;
 
+          // Render the caption.
           ctx.font = `${fontWidth} ${fontSize}px '${fontFamily}'`;
           ctx.fillStyle = "white";
 
@@ -116,33 +132,45 @@ export const editCaption =
           });
         };
 
-export const editBackground =
+// Compose the backgroundCanvas.
+export const composeBackground =
   (canvas: OffscreenCanvas) =>
     (ctx: OffscreenCanvasRenderingContext2D) =>
       (captionCanvas: OffscreenCanvas) => {
-        canvas.width = imageSize + frameSize * 2;
-        canvas.height = imageSize + captionCanvas.height + frameSize * 2;
+        // Define the canvas size.
+        canvas.width = imageSize + imageBorderWidth * 2;
+        canvas.height = imageSize + captionCanvas.height + imageBorderWidth * 2;
 
+        //Render the background.
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       };
 
+// The type that is used for the argument of the "renderCanvas".
 type Layers = {
   image: OffscreenCanvas;
   caption: OffscreenCanvas;
   background: OffscreenCanvas;
 };
 
+// Render the final image.
 export const renderCanvas =
   (canvas: HTMLCanvasElement) =>
     (ctx: CanvasRenderingContext2D) =>
       (layers: Layers) => {
+        // Make sure the both layers are ready.
         if (layers.image.width === 0 || layers.caption.width === 0) return;
 
+        // Define the canvas size.
         canvas.width = layers.background.width;
         canvas.height = layers.background.height;
 
+        // Render all the layers.
         ctx.drawImage(layers.background, 0, 0);
-        ctx.drawImage(layers.image, frameSize, frameSize);
-        ctx.drawImage(layers.caption, frameSize, imageSize + frameSize);
+        ctx.drawImage(layers.image, imageBorderWidth, imageBorderWidth);
+        ctx.drawImage(
+          layers.caption,
+          imageBorderWidth,
+          imageSize + imageBorderWidth,
+        );
       };

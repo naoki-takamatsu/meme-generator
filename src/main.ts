@@ -1,6 +1,6 @@
 import "./styles/main.css";
 import "./styles/fonts.css";
-import * as C from "./converter.ts";
+import * as C from "./operations.ts";
 
 ////////////////////////////////////////////////////////////
 // STATE
@@ -48,7 +48,7 @@ document.addEventListener("dragover", (e) => {
 document.addEventListener("drop", async (e) => {
   e.preventDefault();
 
-  const image = await C.droppedFileToImage(e);
+  const image = await C.loadDroppedImage(e);
 
   if (typeof image === "undefined") return;
 
@@ -58,7 +58,7 @@ document.addEventListener("drop", async (e) => {
 // When the user uploads an image.
 const hiddenInput = document.getElementById("hidden-input") as HTMLInputElement;
 hiddenInput.addEventListener("change", async () => {
-  const image = await C.fetchUploadedImage(hiddenInput);
+  const image = await C.loadUploadedImage(hiddenInput);
 
   if (typeof image === "undefined") return;
 
@@ -75,7 +75,7 @@ uploadImage.addEventListener("click", () => {
 // When the user pastes an image.
 const pasteImage = document.getElementById("paste-image") as HTMLButtonElement;
 pasteImage.addEventListener("click", async () => {
-  const image = await C.clipboardToImage();
+  const image = await C.loadClipboardImage();
 
   if (typeof image === "undefined") return;
 
@@ -121,7 +121,7 @@ const syncDragAndDropGuide = () => {
 };
 
 const syncImageCanvas = async () => {
-  await C.editImage(imageCanvas)(imageCtx)(image!);
+  await C.composeImage(imageCanvas)(imageCtx)(image!);
 
   syncCanvas();
 };
@@ -133,13 +133,13 @@ const syncFontSize = (input: number) => {
 };
 
 const syncCaptionCanvas = () => {
-  C.editCaption(captionCanvas)(captionCtx)(caption)(fontSize);
+  C.composeCaption(captionCanvas)(captionCtx)(caption)(fontSize);
 
   syncBackgroundCanvas();
 };
 
 const syncBackgroundCanvas = () => {
-  C.editBackground(backgroundCanvas)(backgroundCtx)(captionCanvas);
+  C.composeBackground(backgroundCanvas)(backgroundCtx)(captionCanvas);
 
   syncCanvas();
 };
@@ -167,10 +167,10 @@ const initialize = () => {
   // Set up the font.
   document.fonts.load("10px Noto Serif JP");
 
-  // Set up the caption canvas.
+  // Set up the "captionCanvas".
   enterCaption.dispatchEvent(new Event("input"));
 
-  // Set up the font size.
+  // Set up the "fontSize".
   fontSizeInput.dispatchEvent(new Event("input"));
 };
 
