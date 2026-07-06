@@ -17,13 +17,13 @@
       <a id="app-title" href="/"> Meme Generator </a>
     </h1>
     <input id="hidden-input" type="file" accept="image/*" style="display: none" />
-    <div id="button-container" class="row">
+    <div class="row">
       <button id="upload-image">Upload Image</button>
       <button id="paste-image">Paste Image</button>
     </div>
     <textarea id="enter-caption" placeholder="Write a caption for this image..." type="textarea"></textarea>
     <div id="config-container" class="row">
-      <div id="align-buttons" class="row">
+      <div class="row">
         <button id="align-left" class="button-with-icon align-button">
           <svg class="icon-in-button" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -52,8 +52,15 @@
       <input type="range" title="FONT SIZE" id="font-size-input" min="34" value="44" max="54" />
     </div>
     <p id="drag-and-drop-guide">Drag and drop an image here</p>
-    <canvas id="canvas" />
+    <canvas id="canvas"></canvas>
   </main>
+  <dialog id="save-image">
+    <input id="enter-file-name" type="text" placeholder="Enter a file name..." autocomplete="off" />
+    <div class="row">
+      <button id="cancel-save">Cancel</button>
+      <button id="confirm-save">Save</button>
+    </div>
+  </dialog>
 </body>
 
 </html>

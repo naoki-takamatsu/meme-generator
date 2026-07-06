@@ -47,6 +47,22 @@ const backgroundCtx = backgroundCanvas.getContext("2d")!;
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 
+// Dialog for saving the final image.
+const saveImage = document.getElementById("save-image") as HTMLDialogElement;
+
+// Input element for entering a file name.
+const enterFileName = document.getElementById(
+  "enter-file-name",
+) as HTMLInputElement;
+
+// Button for cancel the image saving.
+const cancelSave = document.getElementById("cancel-save") as HTMLButtonElement;
+
+// Button for confirm the image saving.
+const confirmSave = document.getElementById(
+  "confirm-save",
+) as HTMLButtonElement;
+
 ////////////////////////////////////////////////////////////
 // TRIGGERS
 ////////////////////////////////////////////////////////////
@@ -125,6 +141,23 @@ alignRight.addEventListener("click", () => {
   syncCaptionAlign("right");
 });
 
+// When the user clicks the "canvas".
+canvas.addEventListener("click", () => {
+  if (imageCanvas.width === 0) return;
+
+  syncSaveImage("open");
+});
+
+// When the user clicks the cancel button.
+cancelSave.addEventListener("click", () => {
+  syncSaveImage("close");
+});
+
+// When the user clicks the confirm button.
+confirmSave.addEventListener("click", () => {
+  syncSaveImage("save");
+});
+
 ////////////////////////////////////////////////////////////
 // SYNCS
 ////////////////////////////////////////////////////////////
@@ -195,6 +228,16 @@ const syncCanvas = () => {
   };
 
   C.renderCanvas(canvas)(ctx)(layers);
+};
+
+const syncSaveImage = (input: string) => {
+  const args = {
+    saveImage,
+    canvas,
+    enterFileName,
+  };
+
+  C.handleSaveImage(input)(args);
 };
 
 ////////////////////////////////////////////////////////////

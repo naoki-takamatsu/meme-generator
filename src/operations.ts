@@ -17,6 +17,9 @@ const fontWidth = "700";
 // Font family that is used for the "captionCanvas".
 const fontFamily = "Noto Serif JP";
 
+// Default file name for the image saving.
+const defaultFileName = "meme";
+
 ////////////////////////////////////////////////////////////
 // OPERATIONS
 ////////////////////////////////////////////////////////////
@@ -206,3 +209,57 @@ export const renderCanvas =
           imageSize + imageBorderWidth,
         );
       };
+
+// Arguments for handling the "saveImage".
+type SaveImageArguments = {
+  saveImage: HTMLDialogElement;
+  canvas: HTMLCanvasElement;
+  enterFileName: HTMLInputElement;
+};
+
+// Handles the events of "saveImage".
+export const handleSaveImage =
+  (input: string) => (args: SaveImageArguments) => {
+    // Open the dialog.
+    if (input === "open") {
+      args.saveImage.showModal();
+      return;
+    }
+
+    // Close the dialog.
+    if (input === "close") {
+      args.saveImage.close();
+      return;
+    }
+
+    // Save the final image.
+    if (input === "save") {
+      // Define the file name.
+      const fileName =
+        args.enterFileName.value !== ""
+          ? args.enterFileName.value
+          : defaultFileName;
+
+      // Add an extention to the file name.
+      const fileNameWithExtension =
+        fileName.endsWith(".png") || fileName.endsWith(".PNG")
+          ? fileName
+          : fileName + ".png";
+
+      // Create a link element.
+      const link = document.createElement("a");
+
+      // Set up the url to final image data.
+      link.href = args.canvas.toDataURL("image/png");
+
+      // Set up the file name.
+      link.download = fileNameWithExtension;
+
+      // Save the final image.
+      link.click();
+
+      // Close the dialog.
+      args.saveImage.close();
+      return;
+    }
+  };

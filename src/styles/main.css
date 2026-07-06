@@ -42,7 +42,7 @@ button {
 
 /* Container of everything. */
 #main-container {
-  width: min(90vw, 530px);
+  width: min(90vw, 550px);
   display: flex;
   flex-direction: column;
 }
@@ -101,4 +101,15 @@ button {
 /* Canvas for image rendering. */
 #canvas {
   width: 100%;
+}
+
+/* Everything in the "save-image". */
+#save-image * {
+  margin-right: 0;
+  flex: 1;
+}
+
+/* Every buttons in the "save-image". */
+#save-image button {
+  margin-bottom: 0;
 }
