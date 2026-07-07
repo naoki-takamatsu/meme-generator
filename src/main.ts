@@ -1,6 +1,4 @@
-import "./styles/main.css";
-import "./styles/fonts.css";
-import * as C from "./operations.ts";
+import * as O from "./operations.ts";
 
 ////////////////////////////////////////////////////////////
 // STATE
@@ -75,9 +73,9 @@ document.addEventListener("dragover", (e) => {
 document.addEventListener("drop", async (e) => {
   e.preventDefault();
 
-  const image = await C.loadDroppedImage(e);
+  const image = await O.loadDroppedImage(e);
 
-  if (typeof image === "undefined") return;
+  if (O.isImageUndefined(image)) return;
 
   syncImage(image);
 });
@@ -85,9 +83,9 @@ document.addEventListener("drop", async (e) => {
 // When the user uploads an image.
 const hiddenInput = document.getElementById("hidden-input") as HTMLInputElement;
 hiddenInput.addEventListener("change", async () => {
-  const image = await C.loadUploadedImage(hiddenInput);
+  const image = await O.loadUploadedImage(hiddenInput);
 
-  if (typeof image === "undefined") return;
+  if (O.isImageUndefined(image)) return;
 
   syncImage(image);
 });
@@ -102,9 +100,9 @@ uploadImage.addEventListener("click", () => {
 // When the user pastes an image.
 const pasteImage = document.getElementById("paste-image") as HTMLButtonElement;
 pasteImage.addEventListener("click", async () => {
-  const image = await C.loadClipboardImage();
+  const image = await O.loadClipboardImage();
 
-  if (typeof image === "undefined") return;
+  if (O.isImageUndefined(image)) return;
 
   syncImage(image);
 });
@@ -143,7 +141,7 @@ alignRight.addEventListener("click", () => {
 
 // When the user clicks the "canvas".
 canvas.addEventListener("click", () => {
-  if (imageCanvas.width === 0) return;
+  if (O.isImageUndefined(image)) return;
 
   syncSaveImage("open");
 });
@@ -176,11 +174,11 @@ const syncCaption = (input: string) => {
 };
 
 const syncDragAndDropGuide = () => {
-  C.hideHtmlElement(dragAndDropGuide);
+  O.hideHtmlElement(dragAndDropGuide);
 };
 
 const syncImageCanvas = async () => {
-  await C.composeImage(imageCanvas)(imageCtx)(image!);
+  await O.composeImage(imageCanvas)(imageCtx)(image!);
 
   syncCanvas();
 };
@@ -199,7 +197,7 @@ const syncCaptionAlign = (input: string) => {
 };
 
 const syncAlignButtons = (input: string) => {
-  C.activateAlignButton(alignButtons)(input);
+  O.activateAlignButton(alignButtons)(input);
 };
 
 const syncCaptionCanvas = () => {
@@ -209,13 +207,13 @@ const syncCaptionCanvas = () => {
     captionAlign: captionAlignment,
   };
 
-  C.composeCaption(captionCanvas)(captionCtx)(captionOptions);
+  O.composeCaption(captionCanvas)(captionCtx)(captionOptions);
 
   syncBackgroundCanvas();
 };
 
 const syncBackgroundCanvas = () => {
-  C.composeBackground(backgroundCanvas)(backgroundCtx)(captionCanvas);
+  O.composeBackground(backgroundCanvas)(backgroundCtx)(captionCanvas);
 
   syncCanvas();
 };
@@ -227,7 +225,7 @@ const syncCanvas = () => {
     background: backgroundCanvas,
   };
 
-  C.renderCanvas(canvas)(ctx)(layers);
+  O.renderCanvas(canvas)(ctx)(layers);
 };
 
 const syncSaveImage = (input: string) => {
@@ -237,7 +235,7 @@ const syncSaveImage = (input: string) => {
     enterFileName,
   };
 
-  C.handleSaveImage(input)(args);
+  O.handleSaveImage(input)(args);
 };
 
 ////////////////////////////////////////////////////////////
@@ -249,9 +247,6 @@ const initialize = () => {
   window.addEventListener("load", () => {
     document.body.classList.add("ready");
   });
-
-  // Set up the font.
-  document.fonts.load("10px Noto Serif JP");
 
   // Set up the "captionCanvas".
   enterCaption.dispatchEvent(new Event("input"));

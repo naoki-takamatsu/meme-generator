@@ -57,6 +57,13 @@ export const loadClipboardImage = async () => {
   return undefined;
 };
 
+// True if an image is "undefined".
+export const isImageUndefined = (
+  image: ImageBitmap | undefined,
+): image is undefined => {
+  return typeof image === "undefined";
+};
+
 // Make a HTML element invisible.
 export const hideHtmlElement = (element: HTMLElement) => {
   element.style.display = "none";
