@@ -142,7 +142,7 @@ type CaptionOptions = {
 export const composeCaption =
   (canvas: OffscreenCanvas) =>
     (ctx: OffscreenCanvasRenderingContext2D) =>
-      (options: CaptionOptions) => {
+      (opts: CaptionOptions) => {
         // Measure the metrics of the font.
         const metrics = ctx.measureText("");
 
@@ -150,22 +150,22 @@ export const composeCaption =
         const descent = metrics.fontBoundingBoxDescent;
 
         // Define the canvas size.
-        const lines = options.caption.split("\n");
+        const lines = opts.caption.split("\n");
 
         canvas.width = imageSize;
         canvas.height = lines.length * (ascent + descent) + descent;
 
         // Render the caption.
-        ctx.font = `${fontWidth} ${options.fontSize}px '${fontFamily}'`;
+        ctx.font = `${fontWidth} ${opts.fontSize}px '${fontFamily}'`;
         ctx.fillStyle = "white";
-        ctx.textAlign = options.captionAlign as CanvasTextAlign;
+        ctx.textAlign = opts.captionAlign as CanvasTextAlign;
 
         const x =
-          options.captionAlign === "left"
+          opts.captionAlign === "left"
             ? 0
-            : options.captionAlign === "center"
+            : opts.captionAlign === "center"
               ? imageSize / 2
-              : options.captionAlign === "right"
+              : opts.captionAlign === "right"
                 ? imageSize
                 : 0;
 
