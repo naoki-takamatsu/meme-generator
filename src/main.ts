@@ -1,160 +1,81 @@
-import * as O from "./operations.ts";
+import * as U from "./lib/utils.ts";
+import * as O from "./setters.ts";
 
 ////////////////////////////////////////////////////////////
 // STATE
 ////////////////////////////////////////////////////////////
 
-// Font size (px) used for caption rendering.
-let fontSize: number;
-
-// HTML element that shows guide text.
-const dragAndDropGuide = document.getElementById(
-  "drag-and-drop-guide",
-) as HTMLParagraphElement;
-
-// Image uploaded by the user.
+/**
+ * Image uploaded by the user.
+ */
 let image: ImageBitmap | undefined;
 
-// Caption entered by the user.
+/**
+ * Caption entered by the user.
+ */
 let caption = "";
 
-// Alignment of Caption.
-let captionAlignment = "left";
+/**
+ * Alignment of Caption.
+ */
+let captionAlign = "left";
 
-// Buttons for caption alignment.
-const alignLeft = document.getElementById("align-left") as HTMLButtonElement;
-const alignCenter = document.getElementById(
-  "align-center",
-) as HTMLButtonElement;
-const alignRight = document.getElementById("align-right") as HTMLButtonElement;
-const alignButtons = [alignLeft, alignCenter, alignRight];
+/**
+ * Font size (px) used for caption rendering.
+ */
+let fontSize = 0;
 
-// Canvas and rendering context for the image.
-const imageCanvas = new OffscreenCanvas(0, 0);
-const imageCtx = imageCanvas.getContext("2d")!;
+/**
+ * Canvas and rendering context for the image.
+ */
+const imageCanvas = U.createOffScreenCanvas();
 
-// Canvas and rendering context for the caption.
-const captionCanvas = new OffscreenCanvas(0, 0);
-const captionCtx = captionCanvas.getContext("2d")!;
+/**
+ * Canvas and rendering context for the caption.
+ */
+const captionCanvas = U.createOffScreenCanvas();
 
-// Canvas and rendering context for the background.
-const backgroundCanvas = new OffscreenCanvas(0, 0);
-const backgroundCtx = backgroundCanvas.getContext("2d")!;
+/**
+ * Canvas and rendering context for the background.
+ */
+const backgroundCanvas = U.createOffScreenCanvas();
 
-// Canvas and rendering context for the final rendering.
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const ctx = canvas.getContext("2d")!;
+/**
+ * Canvas and rendering context for the final rendering.
+ */
+const canvas = U.getCanvas();
 
-// Dialog for saving the final image.
-const saveImage = document.getElementById("save-image") as HTMLDialogElement;
+/**
+ * Buttons for caption alignment.
+ */
+const alignButtons = U.getAlignButtons();
 
-// Input element for entering a file name.
-const enterFileName = document.getElementById(
-  "enter-file-name",
-) as HTMLInputElement;
+/**
+ * Dialog for saving the final image.
+ */
+const saveImage = U.getElement("save-image") as HTMLDialogElement;
 
-// Button for cancel the image saving.
-const cancelSave = document.getElementById("cancel-save") as HTMLButtonElement;
+/**
+ * Input element for entering a file name.
+ */
+const enterFileName = U.getElement("enter-file-name") as HTMLInputElement;
 
-// Button for confirm the image saving.
-const confirmSave = document.getElementById(
-  "confirm-save",
-) as HTMLButtonElement;
+/**
+ * Button for cancel the image saving.
+ */
+const cancelSave = U.getElement("cancel-save") as HTMLButtonElement;
 
-////////////////////////////////////////////////////////////
-// TRIGGERS
-////////////////////////////////////////////////////////////
+/**
+ * Button for confirm the image saving.
+ */
+const confirmSave = U.getElement("confirm-save") as HTMLButtonElement;
 
-// When the user drags and drops an image.
-document.addEventListener("dragover", (e) => {
-  e.preventDefault();
-});
-
-document.addEventListener("drop", async (e) => {
-  e.preventDefault();
-
-  const image = await O.loadDroppedImage(e);
-
-  if (O.isImageUndefined(image)) return;
-
-  syncImage(image);
-});
-
-// When the user uploads an image.
-const hiddenInput = document.getElementById("hidden-input") as HTMLInputElement;
-hiddenInput.addEventListener("change", async () => {
-  const image = await O.loadUploadedImage(hiddenInput);
-
-  if (O.isImageUndefined(image)) return;
-
-  syncImage(image);
-});
-
-const uploadImage = document.getElementById(
-  "upload-image",
-) as HTMLButtonElement;
-uploadImage.addEventListener("click", () => {
-  hiddenInput.click();
-});
-
-// When the user pastes an image.
-const pasteImage = document.getElementById("paste-image") as HTMLButtonElement;
-pasteImage.addEventListener("click", async () => {
-  const image = await O.loadClipboardImage();
-
-  if (O.isImageUndefined(image)) return;
-
-  syncImage(image);
-});
-
-// When the user changes font size.
-const fontSizeInput = document.getElementById(
-  "font-size-input",
-) as HTMLInputElement;
-fontSizeInput.addEventListener("input", () => {
-  syncFontSize(Number(fontSizeInput.value));
-});
-
-// When the user enters a caption.
-const enterCaption = document.getElementById(
-  "enter-caption",
-) as HTMLTextAreaElement;
-enterCaption.addEventListener("input", (e) => {
-  const element = e.target as HTMLTextAreaElement;
-  syncCaption(element.value);
-});
-
-// When the user chooses left alignment.
-alignLeft.addEventListener("click", () => {
-  syncCaptionAlign("left");
-});
-
-// When the user chooses center alignment.
-alignCenter.addEventListener("click", () => {
-  syncCaptionAlign("center");
-});
-
-// When the user chooses right alignment.
-alignRight.addEventListener("click", () => {
-  syncCaptionAlign("right");
-});
-
-// When the user clicks the "canvas".
-canvas.addEventListener("click", () => {
-  if (O.isImageUndefined(image)) return;
-
-  syncSaveImage("open");
-});
-
-// When the user clicks the cancel button.
-cancelSave.addEventListener("click", () => {
-  syncSaveImage("close");
-});
-
-// When the user clicks the confirm button.
-confirmSave.addEventListener("click", () => {
-  syncSaveImage("save");
-});
+/**
+ * HTML element that shows guide text.
+ */
+const dragAndDropGuide = U.getElement(
+  "drag-and-drop-guide",
+) as HTMLParagraphElement;
 
 ////////////////////////////////////////////////////////////
 // SYNCS
@@ -173,14 +94,11 @@ const syncCaption = (input: string) => {
   syncCaptionCanvas();
 };
 
-const syncDragAndDropGuide = () => {
-  O.hideHtmlElement(dragAndDropGuide);
-};
+const syncCaptionAlign = (input: string) => {
+  captionAlign = input;
 
-const syncImageCanvas = async () => {
-  await O.composeImage(imageCanvas)(imageCtx)(image!);
-
-  syncCanvas();
+  syncAlignButtons();
+  syncCaptionCanvas();
 };
 
 const syncFontSize = (input: number) => {
@@ -189,54 +107,128 @@ const syncFontSize = (input: number) => {
   syncCaptionCanvas();
 };
 
-const syncCaptionAlign = (input: string) => {
-  captionAlignment = input;
+const syncImageCanvas = async () => {
+  await O.setImageCanvas({ image: image! })(imageCanvas);
 
-  syncAlignButtons(input);
-  syncCaptionCanvas();
-};
-
-const syncAlignButtons = (input: string) => {
-  O.activateAlignButton(alignButtons)(input);
+  syncCanvas();
 };
 
 const syncCaptionCanvas = () => {
-  const captionOptions = {
-    caption,
-    fontSize,
-    captionAlign: captionAlignment,
-  };
-
-  O.composeCaption(captionCanvas)(captionCtx)(captionOptions);
+  O.setCaptionCanvas({ caption, fontSize, captionAlign })(captionCanvas);
 
   syncBackgroundCanvas();
 };
 
 const syncBackgroundCanvas = () => {
-  O.composeBackground(backgroundCanvas)(backgroundCtx)(captionCanvas);
+  O.setBackgroundCanvas({ captionCanvas })(backgroundCanvas);
 
   syncCanvas();
 };
 
 const syncCanvas = () => {
-  const layers = {
-    image: imageCanvas,
-    caption: captionCanvas,
-    background: backgroundCanvas,
-  };
-
-  O.renderCanvas(canvas)(ctx)(layers);
+  O.setCanvas({ imageCanvas, captionCanvas, backgroundCanvas })(canvas);
 };
 
-const syncSaveImage = (input: string) => {
-  const args = {
-    saveImage,
-    canvas,
-    enterFileName,
-  };
-
-  O.handleSaveImage(input)(args);
+const syncAlignButtons = () => {
+  O.setAlignButtons({ captionAlign })(alignButtons);
 };
+
+const syncSaveImage = (command: string) => {
+  O.setSaveImage({ command, canvas, enterFileName })(saveImage);
+};
+
+const syncDragAndDropGuide = () => {
+  O.setDragAndDropGuide(dragAndDropGuide);
+};
+
+////////////////////////////////////////////////////////////
+// TRIGGERS
+////////////////////////////////////////////////////////////
+
+// When the user drags and drops an image.
+document.addEventListener("dragover", (e) => {
+  e.preventDefault();
+});
+
+document.addEventListener("drop", async (e) => {
+  e.preventDefault();
+
+  const image = await U.loadDroppedImage(e);
+
+  if (U.isImageUndefined(image)) return;
+
+  syncImage(image);
+});
+
+// When the user uploads an image.
+const hiddenInput = U.getElement("hidden-input") as HTMLInputElement;
+hiddenInput.addEventListener("change", async () => {
+  const image = await U.loadUploadedImage(hiddenInput);
+
+  if (U.isImageUndefined(image)) return;
+
+  syncImage(image);
+});
+
+const uploadImage = U.getElement("upload-image") as HTMLButtonElement;
+uploadImage.addEventListener("click", () => {
+  hiddenInput.click();
+});
+
+// When the user pastes an image.
+const pasteImage = U.getElement("paste-image") as HTMLButtonElement;
+pasteImage.addEventListener("click", async () => {
+  const image = await U.loadClipboardImage();
+
+  if (U.isImageUndefined(image)) return;
+
+  syncImage(image);
+});
+
+// When the user changes font size.
+const fontSizeInput = U.getElement("font-size-input") as HTMLInputElement;
+fontSizeInput.addEventListener("input", () => {
+  syncFontSize(Number(fontSizeInput.value));
+});
+
+// When the user enters a caption.
+const enterCaption = U.getElement("enter-caption") as HTMLTextAreaElement;
+enterCaption.addEventListener("input", (e) => {
+  const element = e.target as HTMLTextAreaElement;
+  syncCaption(element.value);
+});
+
+// When the user chooses left alignment.
+alignButtons.left.addEventListener("click", () => {
+  syncCaptionAlign("left");
+});
+
+// When the user chooses center alignment.
+alignButtons.center.addEventListener("click", () => {
+  syncCaptionAlign("center");
+});
+
+// When the user chooses right alignment.
+alignButtons.right.addEventListener("click", () => {
+  syncCaptionAlign("right");
+});
+
+// When the user clicks the "canvas".
+canvas.value.addEventListener("click", () => {
+  if (U.isImageUndefined(image)) return;
+
+  syncSaveImage("open");
+});
+
+// When the user clicks the cancel button.
+cancelSave.addEventListener("click", () => {
+  syncSaveImage("close");
+});
+
+// When the user clicks the confirm button.
+confirmSave.addEventListener("click", () => {
+  syncSaveImage("save");
+});
 
 ////////////////////////////////////////////////////////////
 // INITIALIZE
@@ -255,7 +247,7 @@ const initialize = () => {
   fontSizeInput.dispatchEvent(new Event("input"));
 
   // Set up the "captionAlignment".
-  alignLeft.dispatchEvent(new Event("click"));
+  alignButtons.left.dispatchEvent(new Event("click"));
 };
 
 initialize();
