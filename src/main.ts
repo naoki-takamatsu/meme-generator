@@ -1,5 +1,5 @@
 import * as U from "./lib/utils.ts";
-import * as O from "./setters.ts";
+import * as S from "./setters.ts";
 
 ////////////////////////////////////////////////////////////
 // STATE
@@ -108,37 +108,37 @@ const syncFontSize = (input: number) => {
 };
 
 const syncImageCanvas = async () => {
-  await O.setImageCanvas({ image: image! })(imageCanvas);
+  await S.setImageCanvas({ image: image! })(imageCanvas);
 
   syncCanvas();
 };
 
 const syncCaptionCanvas = () => {
-  O.setCaptionCanvas({ caption, fontSize, captionAlign })(captionCanvas);
+  S.setCaptionCanvas({ caption, fontSize, captionAlign })(captionCanvas);
 
   syncBackgroundCanvas();
 };
 
 const syncBackgroundCanvas = () => {
-  O.setBackgroundCanvas({ captionCanvas })(backgroundCanvas);
+  S.setBackgroundCanvas({ captionCanvas })(backgroundCanvas);
 
   syncCanvas();
 };
 
 const syncCanvas = () => {
-  O.setCanvas({ imageCanvas, captionCanvas, backgroundCanvas })(canvas);
+  S.setCanvas({ imageCanvas, captionCanvas, backgroundCanvas })(canvas);
 };
 
 const syncAlignButtons = () => {
-  O.setAlignButtons({ captionAlign })(alignButtons);
+  S.setAlignButtons({ captionAlign })(alignButtons);
 };
 
 const syncSaveImage = (command: string) => {
-  O.setSaveImage({ command, canvas, enterFileName })(saveImage);
+  S.setSaveImage({ command, canvas, enterFileName })(saveImage);
 };
 
 const syncDragAndDropGuide = () => {
-  O.setDragAndDropGuide(dragAndDropGuide);
+  S.setDragAndDropGuide(dragAndDropGuide);
 };
 
 ////////////////////////////////////////////////////////////
