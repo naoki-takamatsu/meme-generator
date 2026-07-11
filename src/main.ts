@@ -108,33 +108,33 @@ const syncFontSize = (input: number) => {
 };
 
 const syncImageCanvas = async () => {
-  await S.setImageCanvas({ image: image! })(imageCanvas);
+  await S.setImageCanvas({ image: image! }, imageCanvas);
 
   syncCanvas();
 };
 
 const syncCaptionCanvas = () => {
-  S.setCaptionCanvas({ caption, fontSize, captionAlign })(captionCanvas);
+  S.setCaptionCanvas({ caption, fontSize, captionAlign }, captionCanvas);
 
   syncBackgroundCanvas();
 };
 
 const syncBackgroundCanvas = () => {
-  S.setBackgroundCanvas({ captionCanvas })(backgroundCanvas);
+  S.setBackgroundCanvas({ captionCanvas }, backgroundCanvas);
 
   syncCanvas();
 };
 
 const syncCanvas = () => {
-  S.setCanvas({ imageCanvas, captionCanvas, backgroundCanvas })(canvas);
+  S.setCanvas({ imageCanvas, captionCanvas, backgroundCanvas }, canvas);
 };
 
 const syncAlignButtons = () => {
-  S.setAlignButtons({ captionAlign })(alignButtons);
+  S.setAlignButtons({ captionAlign }, alignButtons);
 };
 
 const syncSaveImage = (command: string) => {
-  S.setSaveImage({ command, canvas, enterFileName })(saveImage);
+  S.setSaveImage({ command, canvas, enterFileName }, saveImage);
 };
 
 const syncDragAndDropGuide = () => {
